@@ -68,3 +68,24 @@ function updateStreak() {
 
 document.getElementById("streak").innerText = `🔥 Streak: ${streak} days`;
 render();
+
+function render() {
+  let list = document.getElementById("taskList");
+  list.innerHTML = "";
+
+  tasks.forEach((task, i) => {
+    let li = document.createElement("li");
+
+    li.innerHTML = `
+      <input type="checkbox" ${task.done ? "checked" : ""} 
+        onclick="toggleTask(${i})">
+      <span style="text-decoration:${task.done ? 'line-through' : 'none'}">
+        ${task.text}
+      </span>
+    `;
+
+    list.appendChild(li);
+  });
+
+  updateProgress();
+}
