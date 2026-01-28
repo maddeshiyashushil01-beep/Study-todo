@@ -83,6 +83,11 @@ function render() {
         ${task.text}
       </span>
     `;
+function clearCompleted() {
+  tasks = tasks.filter(task => !task.done);
+  saveAndRender();
+}
+
 
     list.appendChild(li);
   });
