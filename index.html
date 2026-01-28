@@ -55,5 +55,21 @@ function renderTasks() {
 <button onclick="enableNotify()">🔔 Enable Reminder</button>
 
   <script src="script.js"></script>
+val notifIntent = Intent(context, MainActivity::class.java)
+val pendingActivity = PendingIntent.getActivity(
+  context, 0, notifIntent,
+  PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+)
+
+val notif = NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID)
+  .setSmallIcon(R.drawable.ic_notification) // add this drawable
+  .setContentTitle(title)
+  .setContentText(body)
+  .setContentIntent(pendingActivity)
+  .setAutoCancel(true)
+  .build()
+
+val nm = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+nm.notify((System.currentTimeMillis() % 10000).toInt(), notif)
 </body>
 </html>
