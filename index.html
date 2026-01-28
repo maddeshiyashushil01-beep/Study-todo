@@ -17,6 +17,31 @@
     <input type="text" id="taskInput" placeholder="Add your task...">
     <button onclick="addTask()">Add</button>
 
+
+<script>
+function renderTasks() {
+  let list = document.getElementById("taskList");
+  list.innerHTML = "";
+
+  tasks.forEach((task, i) => {
+    list.innerHTML += `
+      <li style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" ${task.done ? "checked" : ""}
+          onclick="toggleTask(${i})">
+
+        <span style="flex:1; text-decoration:${task.done ? "line-through" : "none"}">
+          ${task.text}
+        </span>
+
+        <button onclick="deleteTask(${i})" style="color:red;">❌</button>
+      </li>
+    `;
+  });
+
+  updateProgress();
+}
+</script>
+
     <ul id="taskList"></ul>
 
     <div class="progress-box">
