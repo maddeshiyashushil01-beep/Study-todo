@@ -94,3 +94,67 @@ function clearCompleted() {
 
   updateProgress();
 }
+
+let tasks = [];
+
+/* Add task */
+function addTask() {
+  let input = document.getElementById("taskInput");
+  let text = input.value.trim();
+
+  if (text === "") return;
+
+  tasks.push({
+    text: text,
+    done: false
+  });
+
+  input.value = "";
+  renderTasks();
+}
+
+/* Toggle complete */
+function toggleTask(index) {
+  tasks[index].done = !tasks[index].done;
+  renderTasks();
+}
+
+/* ❌ Delete task */
+function deleteTask(index) {
+  tasks.splice(index, 1);
+  renderTasks();
+}
+
+/* Render tasks */
+function renderTasks() {
+  let list = document.getElementById("taskList");
+  list.innerHTML = "";
+
+  tasks.forEach((task, i) => {
+    list.innerHTML += `
+      <li style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" ${task.done ? "checked" : ""}
+          onclick="toggleTask(${i})">
+
+        <span style="flex:1; text-decoration:${task.done ? "line-through" : "none"}">
+          ${task.text}
+        </span>
+
+        <button onclick="deleteTask(${i})" style="color:red;">❌</button>
+      </li>
+    `;
+  });
+
+  updateProgress();
+}
+
+/* Progress */
+function updateProgress() {
+  let done = tasks.filter(t => t.done).length;
+  let total = tasks.length;
+
+  let percent = total === 0 ? 0 : Math.round((done / total) * 100);
+
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("progressText").innerText = `Progress: ${percent}%`;
+}
