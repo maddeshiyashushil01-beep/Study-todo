@@ -1,60 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Study Todo</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Study Todo • Focus & Track</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
 
-  <div class="app">
-    <h2>📚 Study Todo</h2>
+  <div class="container">
+    <header class="header">
+      <h1>Study Todo</h1>
+      <div class="streak" id="streak">🔥 Streak: 0 days</div>
+    </header>
 
-    <p id="streak">🔥 Streak: 0 days</p>
+    <div class="input-area">
+      <input type="text" id="task-input" placeholder="What will you study today?"/>
+      <select id="priority-select">
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+        <option value="low">Low</option>
+      </select>
+      <button id="add-btn">Add</button>
+    </div>
 
-    <input type="text" id="taskInput" placeholder="Add your task...">
-    <button onclick="addTask()">Add</button>
+    <button class="reminder-btn" id="reminder-toggle">🔔 Enable Reminders</button>
 
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <span id="progress-text">Progress: 0%</span>
+    </div>
 
-<script>
-function renderTasks() {
-  let list = document.getElementById("taskList");
-  list.innerHTML = "";
+    <ul class="task-list" id="task-list"></ul>
 
-  tasks.forEach((task, i) => {
-    list.innerHTML += `
-      <li style="display:flex;align-items:center;gap:10px;">
-        <input type="checkbox" ${task.done ? "checked" : ""}
-          onclick="toggleTask(${i})">
+    <p class="motivation" id="motivation">Start strong today 💪</p>
+  </div>
 
-        <span style="flex:1; text-decoration:${task.done ? "line-through" : "none"}">
-          ${task.text}
-        </span>
-
-        <button onclick="deleteTask(${i})" style="color:red;">❌</button>
-      </li>
-    `;
-  });
-
-  updateProgress();
-}
-</script>
-
-    <ul id="taskList"></ul>
-
-    <div class="progress-box">
-      <div id="progressBar"></div>
-    </div>
-
-    <p id="progressText">Progress: 0%</p>
-
-    <p id="quote">Start your day strong 💪</p>
-  </div>
-<button onclick="enableNotify()">🔔 Enable Reminder</button>
-
-  <script src="script.js"></script>
-
-  
+  <script src="script.js"></script>
 </body>
 </html>
