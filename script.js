@@ -1,160 +1,157 @@
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let streak = localStorage.getItem("streak") || 0;
-let lastDate = localStorage.getItem("lastDate");
+const taskInput = document.getElementById('task-input');
+const prioritySelect = document.getElementById('priority-select');
+const addBtn = document.getElementById('add-btn');
+const taskList = document.getElementById('task-list');
+const progressFill = document.getElementById('progress-fill');
+const progressText = document.getElementById('progress-text');
+const streakEl = document.getElementById('streak');
+const reminderToggle = document.getElementById('reminder-toggle');
+const motivationEl = document.getElementById('motivation');
+const themeToggle = document.getElementById('theme-toggle');
 
-function saveData() {
-  localStorage.setItem("tasks", JSON.stringify(tasks));
-  localStorage.setItem("streak", streak);
-  localStorage.setItem("lastDate", new Date().toDateString());
+let tasks = JSON.parse(localStorage.getItem('studyTasks')) || [];
+let streak = parseInt(localStorage.getItem('studyStreak')) || 0;
+let lastComplete = localStorage.getItem('lastComplete') || null;
+let reminders = JSON.parse(localStorage.getItem('reminders')) || false;
+let dark = JSON.parse(localStorage.getItem('darkMode')) || false;
+
+const quotes = [
+  "Small steps every day → big results",
+  "You've got this. Keep going.",
+  "Focus. Finish. Repeat.",
+  "One task closer to your goal ✨",
+  "Progress > perfection"
+];
+
+function save() {
+  localStorage.setItem('studyTasks', JSON.stringify(tasks));
+  localStorage.setItem('studyStreak', streak);
+  localStorage.setItem('lastComplete', lastComplete);
+  localStorage.setItem('reminders', JSON.stringify(reminders));
+  localStorage.setItem('darkMode', JSON.stringify(dark));
 }
 
-function addTask() {
-  let input = document.getElementById("taskInput");
-  if (input.value === "") return;
-
-  tasks.push({ text: input.value, done: false });
-  input.value = "";
-  saveData();
-  render();
-}
-
-function toggleTask(index) {
-  tasks[index].done = !tasks[index].done;
-  updateStreak();
-  saveData();
-  render();
-}
-
-function render() {
-  let list = document.getElementById("taskList");
-  list.innerHTML = "";
+function updateUI() {
+  taskList.innerHTML = '';
 
   tasks.forEach((task, i) => {
-    let li = document.createElement("li");
+    const li = document.createElement('li');
+    li.className = `task-item ${task.priority} ${task.done ? 'completed' : ''}`;
+    
     li.innerHTML = `
-      <span onclick="toggleTask(${i})"
-        style="text-decoration:${task.done ? 'line-through' : 'none'}">
-        ${task.text}
-      </span>
+      <input type="checkbox" ${task.done ? 'checked' : ''}>
+      <span class="task-text">${task.text}</span>
+      <button class="delete-btn">×</button>
     `;
-    list.appendChild(li);
+
+    li.querySelector('input').onchange = () => {
+      tasks[i].done = !tasks[i].done;
+      checkStreak();
+      save();
+      updateUI();
+      updateProgress();
+    };
+
+    li.querySelector('.delete-btn').onclick = () => {
+      li.style.opacity = '0';
+      li.style.transform = 'translateY(10px)';
+      setTimeout(() => {
+        tasks.splice(i, 1);
+        save();
+        updateUI();
+        updateProgress();
+      }, 300);
+    };
+
+    taskList.appendChild(li);
   });
 
   updateProgress();
+  streakEl.textContent = `🔥 Streak: ${streak} days`;
+  reminderToggle.textContent = reminders ? '🔕 Disable Reminders' : '🔔 Enable Reminders';
+  reminderToggle.className = `reminder-btn ${reminders ? 'active' : ''}`;
+  document.body.className = dark ? 'dark' : '';
+  motivationEl.textContent = quotes[Math.floor(Math.random() * quotes.length)];
 }
 
 function updateProgress() {
-  let done = tasks.filter(t => t.done).length;
-  let percent = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
-
-  document.getElementById("progressBar").style.width = percent + "%";
-  document.getElementById("progressText").innerText = `Progress: ${percent}%`;
-
-  let quote = "Start now 🚀";
-  if (percent > 30) quote = "Good going 💪";
-  if (percent > 70) quote = "Excellent work 🔥";
-
-  document.getElementById("quote").innerText = quote;
-}
-
-function updateStreak() {
-  let today = new Date().toDateString();
-
-  if (lastDate !== today) {
-    streak++;
-    document.getElementById("streak").innerText = `🔥 Streak: ${streak} days`;
+  if (!tasks.length) {
+    progressFill.style.width = '0%';
+    progressText.textContent = 'Progress: 0%';
+    return;
   }
+  const done = tasks.filter(t => t.done).length;
+  const perc = Math.round((done / tasks.length) * 100);
+  progressFill.style.width = perc + '%';
+  progressText.textContent = `Progress: ${perc}%`;
 }
 
-document.getElementById("streak").innerText = `🔥 Streak: ${streak} days`;
-render();
+function checkStreak() {
+  const today = new Date().toDateString();
+  const allDone = tasks.length > 0 && tasks.every(t => t.done);
 
-function render() {
-  let list = document.getElementById("taskList");
-  list.innerHTML = "";
+  if (allDone && lastComplete !== today) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const wasYesterday = lastComplete === yesterday.toDateString();
 
-  tasks.forEach((task, i) => {
-    let li = document.createElement("li");
+    streak = wasYesterday ? streak + 1 : 1;
+    lastComplete = today;
+    if (reminders && Notification.permission === 'granted') {
+      new Notification("Great job! 🎉", { body: `Streak now: ${streak} days` });
+    }
+  }
 
-    li.innerHTML = `
-      <input type="checkbox" ${task.done ? "checked" : ""} 
-        onclick="toggleTask(${i})">
-      <span style="text-decoration:${task.done ? 'line-through' : 'none'}">
-        ${task.text}
-      </span>
-    `;
-function clearCompleted() {
-  tasks = tasks.filter(task => !task.done);
-  saveAndRender();
+  save();
 }
 
-
-    list.appendChild(li);
-  });
-
-  updateProgress();
-}
-
-let tasks = [];
-
-/* Add task */
 function addTask() {
-  let input = document.getElementById("taskInput");
-  let text = input.value.trim();
-
-  if (text === "") return;
+  const text = taskInput.value.trim();
+  if (!text) return;
 
   tasks.push({
-    text: text,
-    done: false
+    text,
+    done: false,
+    priority: prioritySelect.value,
+    added: new Date().toISOString()
   });
 
-  input.value = "";
-  renderTasks();
+  taskInput.value = '';
+  save();
+  updateUI();
+  motivationEl.textContent = quotes[Math.floor(Math.random() * quotes.length)];
 }
 
-/* Toggle complete */
-function toggleTask(index) {
-  tasks[index].done = !tasks[index].done;
-  renderTasks();
-}
+// Events
+addBtn.onclick = addTask;
+taskInput.onkeypress = e => { if (e.key === 'Enter') addTask(); };
 
-/* ❌ Delete task */
-function deleteTask(index) {
-  tasks.splice(index, 1);
-  renderTasks();
-}
+reminderToggle.onclick = () => {
+  reminders = !reminders;
+  if (reminders && Notification.permission !== 'granted') {
+    Notification.requestPermission();
+  }
+  save();
+  updateUI();
+};
 
-/* Render tasks */
-function renderTasks() {
-  let list = document.getElementById("taskList");
-  list.innerHTML = "";
+themeToggle.onclick = () => {
+  dark = !dark;
+  save();
+  updateUI();
+};
 
-  tasks.forEach((task, i) => {
-    list.innerHTML += `
-      <li style="display:flex;align-items:center;gap:10px;">
-        <input type="checkbox" ${task.done ? "checked" : ""}
-          onclick="toggleTask(${i})">
+// Init
+if (dark) document.body.classList.add('dark');
+updateUI();
 
-        <span style="flex:1; text-decoration:${task.done ? "line-through" : "none"}">
-          ${task.text}
-        </span>
-
-        <button onclick="deleteTask(${i})" style="color:red;">❌</button>
-      </li>
-    `;
-  });
-
-  updateProgress();
-}
-
-/* Progress */
-function updateProgress() {
-  let done = tasks.filter(t => t.done).length;
-  let total = tasks.length;
-
-  let percent = total === 0 ? 0 : Math.round((done / total) * 100);
-
-  document.getElementById("progressBar").style.width = percent + "%";
-  document.getElementById("progressText").innerText = `Progress: ${percent}%`;
-}
+// Optional: daily reset check
+setInterval(() => {
+  const today = new Date().toDateString();
+  if (lastComplete && lastComplete < today && streak > 0) {
+    // You can reset streak here if you want strict daily rule
+    // streak = 0;
+    // save();
+    // updateUI();
+  }
+}, 60000);
