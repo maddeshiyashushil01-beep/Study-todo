@@ -3,53 +3,76 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Study Todo • Focus & Track</title>
+  <title>Study Focus • Organize Your Day</title>
   <link rel="stylesheet" href="style.css"/>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
 
-  <div class="container">
-    <header class="header">
-      <h1>Study Todo</h1>
-      <div class="streak" id="streak">🔥 Streak: 0 days</div>
+  <!-- Landing Page (shown before login) -->
+  <div id="landing" class="landing">
+    <header class="hero">
+      <nav class="top-nav">
+        <div class="logo">Study Focus</div>
+        <button id="login-landing-btn" class="btn btn-outline">Log in</button>
+      </nav>
+
+      <div class="hero-content">
+        <h1>Clarity, finally.</h1>
+        <p class="tagline">Join thousands of students & professionals who simplify studying and life with the #1 focus app.</p>
+        <button id="signup-btn" class="btn btn-primary">Start for free →</button>
+        <p class="trust">No credit card required • Free forever plan available</p>
+      </div>
     </header>
 
-    <div class="input-area">
-      <input type="text" id="task-input" placeholder="What will you study today?"/>
-      <select id="priority-select">
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-        <option value="low">Low</option>
-      </select>
-      <button id="add-btn">Add</button>
-    </div>
-
-
-
-
-    <button class="reminder-btn" id="reminder-toggle">🔔 Enable Reminders</button>
-
-    <div class="progress-container">
-      <div class="progress-bar">
-        <div class="progress-fill" id="progress-fill"></div>
+    <section class="benefits">
+      <div class="benefit">
+        <h3>Capture ideas instantly</h3>
+        <p>Add tasks at the speed of thought with natural language.</p>
       </div>
-      <span id="progress-text">Progress: 0%</span>
-    </div>
+      <div class="benefit">
+        <h3>Stay focused</h3>
+        <p>Today view, priorities, streak tracking — get things done.</p>
+      </div>
+      <div class="benefit">
+        <h3>Build habits</h3>
+        <p>Streaks, progress, reminders — turn goals into reality.</p>
+      </div>
+    </section>
 
-    <ul class="task-list" id="task-list"></ul>
+    <section class="stats">
+      <div>10,000+ active users</div>
+      <div>500K+ tasks completed</div>
+      <div>4.9 ★ average rating</div>
+    </section>
 
-    <p class="motivation" id="motivation">Start strong today 💪</p>
+    <footer class="footer">
+      <p>© 2026 Study Focus. Made with focus in Ahmedabad.</p>
+    </footer>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Todo App (hidden until logged in) -->
+  <div id="app-container" style="display: none;">
+    <!-- Your existing todo UI from before goes here -->
+    <button class="theme-toggle" id="theme-toggle">🌙</button>
+    <div class="container">
+      <!-- Paste your previous header, auth-section (now hidden), todo-section here -->
+      <header class="header">
+        <h1>Study Focus</h1>
+        <div class="streak" id="streak">🔥 Streak: 0 days</div>
+      </header>
+      <div id="auth-section" style="display: none;"></div> <!-- Hide since already logged in -->
+      <div id="todo-section">
+        <!-- Your input-area, reminder-btn, progress, task-list, motivation from previous code -->
+      </div>
+    </div>
+  </div>
 
-<!-- Firebase SDK v10+ (compat version - easiest for beginners) -->
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore-compat.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore-compat.js"></script>
+
+  <script src="script.js"></script>
 </body>
 </html>
