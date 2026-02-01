@@ -56,3 +56,16 @@ auth.getRedirectResult()
   });
 
 // Keep your existing auth.onAuthStateChanged(...) as is
+
+
+
+const isMobile = /Mobi|Android|iPhone/i.test(navigator.userAgent);
+
+const triggerLogin = () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  if (isMobile) {
+    auth.signInWithRedirect(provider);
+  } else {
+    auth.signInWithPopup(provider);
+  }
+};
