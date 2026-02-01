@@ -21,3 +21,14 @@ signupBtn.onclick = loginLandingBtn.onclick = () => {
   const provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider).catch(err => console.error(err));
 };
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('app-container').style.display = 'block';
+    // loadUserData() etc.
+  } else {
+    document.getElementById('landing').style.display = 'block';
+    document.getElementById('app-container').style.display = 'none';
+  }
+});
