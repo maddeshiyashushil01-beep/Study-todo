@@ -32,3 +32,27 @@ auth.onAuthStateChanged(user => {
     document.getElementById('app-container').style.display = 'none';
   }
 });
+
+// Change to redirect flow (better for mobile)
+const triggerLogin = () => {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithRedirect(provider)
+    .catch((error) => {
+      console.error('Redirect login error:', error);
+      alert('Login issue: ' + error.message);
+    });
+};
+
+// After redirect comes back, handle the result (add this near the top of script.js, after auth init)
+auth.getRedirectResult()
+  .then((result) => {
+    if (result.user) {
+      console.log('Redirect login success:', result.user.displayName);
+      // The onAuthStateChanged will handle showing the app
+    }
+  })
+  .catch((error) => {
+    console.error('Redirect result error:', error);
+  });
+
+// Keep your existing auth.onAuthStateChanged(...) as is
