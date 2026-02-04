@@ -239,3 +239,11 @@ document.getElementById("theme-toggle")?.addEventListener("click", () => {
 // Initial check on page load
 // ================================================
 console.log("Page loaded – waiting for auth state...");
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSy...something-here...",
+  authDomain: "your-project.firebaseapp.com",
+  projectId: "your-project",
+  // ... other keys
+};
