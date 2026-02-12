@@ -9,102 +9,60 @@
 </head>
 <body>
 
-  <!-- Landing Page (visible before login) -->
+  <!-- Landing Page -->
   <div id="landing" class="landing">
     <header class="hero">
       <nav class="top-nav">
         <div class="logo">Study Focus</div>
-        <button id="login-landing-btn" class="btn btn-outline" aria-label="Log in">Log in</button>
+        <button id="login-landing-btn" class="btn btn-outline">Log in</button>
       </nav>
 
       <div class="hero-content">
         <h1>Clarity, finally.</h1>
-        <p class="tagline">Join thousands of students & professionals who simplify studying and life with the #1 focus app.</p>
-        <button id="signup-btn" class="btn btn-primary" aria-label="Start for free">Start for free →</button>
-        <p class="trust">No credit card required • Free forever plan available</p>
+        <p class="tagline">
+          Join thousands of students who simplify studying with Study Focus.
+        </p>
+        <button id="signup-btn" class="btn btn-primary">
+          Start for free →
+        </button>
       </div>
     </header>
-
-    <section class="benefits">
-      <div class="benefit">
-        <h3>Capture ideas instantly</h3>
-        <p>Add tasks at the speed of thought with natural language.</p>
-      </div>
-      <div class="benefit">
-        <h3>Stay focused</h3>
-        <p>Today view, priorities, streak tracking — get things done.</p>
-      </div>
-      <div class="benefit">
-        <h3>Build habits</h3>
-        <p>Streaks, progress, reminders — turn goals into reality.</p>
-      </div>
-    </section>
-
-    <section class="stats">
-      <div>10,000+ active users</div>
-      <div>500K+ tasks completed</div>
-      <div>4.9 ★ average rating</div>
-    </section>
-
-    <footer class="footer">
-      <p>© 2026 Study Focus. Made in India by Sk.</p>
-    </footer>
   </div>
 
-<input type="text" id="task-input" ...>
-<select id="priority-select" ...>
-<button id="add-btn">Add</button>
-<ul id="task-list"></ul>
-<div class="progress-fill" id="progress-fill"></div>
-<span id="progress-text">...</span>
-
-
-  <!-- Todo App (hidden until logged in) -->
-  <div id="app-container" style="display: none;">
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-    
+  <!-- Todo App -->
+  <div id="app-container" style="display:none;">
     <div class="container">
       <header class="header">
         <h1>Study Focus</h1>
-        <div class="streak" id="streak">🔥 Streak: 0 days</div>
+        <button id="logout-btn" class="btn btn-outline">Logout</button>
       </header>
 
-      <div id="todo-section">
-        <!-- === Your task management UI goes here === -->
-        <!-- Example placeholder - replace with your full code -->
-        <div class="input-area">
-          <input type="text" id="task-input" placeholder="What will you study today?" />
-          <select id="priority-select">
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="low">Low</option>
-          </select>
-          <button id="add-btn">Add</button>
-        </div>
-
-        <button class="reminder-btn" id="reminder-toggle">🔔 Enable Reminders</button>
-
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-          </div>
-          <span id="progress-text">Progress: 0%</span>
-        </div>
-
-        <ul class="task-list" id="task-list"></ul>
-
-        <p class="motivation" id="motivation">Start strong today 💪</p>
-        <!-- End of placeholder - add your JS logic for this part in script.js -->
+      <div class="input-area">
+        <input type="text" id="task-input" placeholder="What will you study today?" />
+        <select id="priority-select">
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="low">Low</option>
+        </select>
+        <button id="add-btn">Add</button>
       </div>
+
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <span id="progress-text">Progress: 0%</span>
+      </div>
+
+      <ul id="task-list"></ul>
     </div>
   </div>
 
-  <!-- Firebase SDKs - ONLY ONCE, at the bottom of body -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore-compat.js"></script>
 
-  <!-- Your custom script (must come after Firebase) -->
   <script src="script.js"></script>
 </body>
 </html>
