@@ -1,3 +1,17 @@
+function login() {
+  alert("Login button working");
+
+  auth.signInWithPopup(provider)
+    .then((result) => {
+      alert("Login Success");
+    })
+    .catch((error) => {
+      alert(error.message);
+    });
+}
+
+
+
 // Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyBQxAEzF40f7wceNr1otvUYppzpGazJlro",
