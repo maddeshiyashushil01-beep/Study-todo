@@ -1,231 +1,64 @@
-/* Reset & Base */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: #f8fafc;
-  color: #0f172a;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  background: #f4f6f9;
 }
 
-/* Container & Landing */
-.landing {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1.25rem;
-}
-
-/* Hero Section */
 .hero {
   text-align: center;
-  padding: 6rem 1rem 10rem;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  position: relative;
-  overflow: hidden;
-}
-
-.top-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto 5rem;
-  padding: 0 1rem;
-}
-
-.logo {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: #2563eb;
-  letter-spacing: -0.025em;
+  padding: 100px 20px;
 }
 
 .btn {
-  padding: 0.85rem 1.75rem;
-  border-radius: 9999px; /* pill shape – more modern */
-  font-size: 1.05rem;
-  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.25s ease;
-  white-space: nowrap;
+  border: none;
 }
 
 .btn-primary {
   background: #2563eb;
   color: white;
-  border: none;
-}
-
-.btn-primary:hover {
-  background: #1d4ed8;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25);
 }
 
 .btn-outline {
-  background: transparent;
+  background: white;
   border: 2px solid #2563eb;
   color: #2563eb;
 }
 
-.btn-outline:hover {
-  background: rgba(37, 99, 235, 0.05);
-  transform: translateY(-2px);
+.container {
+  max-width: 600px;
+  margin: 50px auto;
 }
 
-.hero h1 {
-  font-size: clamp(2.8rem, 8vw, 4.5rem);
-  font-weight: 800;
-  line-height: 1.05;
-  margin-bottom: 1.25rem;
-  color: #0f172a;
-  letter-spacing: -0.03em;
-}
-
-.tagline {
-  font-size: clamp(1.25rem, 4vw, 1.5rem);
-  color: #475569;
-  max-width: 720px;
-  margin: 0 auto 2.5rem;
-  line-height: 1.4;
-}
-
-.trust {
-  font-size: 1rem;
-  color: #64748b;
-  margin-top: 1rem;
-}
-
-/* Benefits Section */
-.benefits {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2.5rem;
-  max-width: 1200px;
-  margin: -6rem auto 0;
-  padding: 0 1rem;
-}
-
-.benefit {
-  background: white;
-  padding: 2.5rem 2rem;
-  border-radius: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-  text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.benefit:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-.benefit h3 {
-  font-size: 1.6rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #0f172a;
-}
-
-.benefit p {
-  color: #475569;
-  font-size: 1.05rem;
-}
-
-/* Stats Section */
-.stats {
+.input-area {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 3.5rem 4rem;
-  padding: 6rem 1rem 4rem;
-  background: #f1f5f9;
-  text-align: center;
+  gap: 10px;
 }
 
-.stats > div {
-  font-size: 1.15rem;
-  font-weight: 600;
-  color: #2563eb;
+#task-list {
+  list-style: none;
+  padding: 0;
 }
 
-.stats > div strong {
-  display: block;
-  font-size: 2.8rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 0.5rem;
+#task-list li {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+  background: white;
+  padding: 10px;
+  border-radius: 6px;
 }
 
-/* Footer */
-.footer {
-  text-align: center;
-  padding: 4rem 1rem 2rem;
-  color: #94a3b8;
-  font-size: 0.95rem;
-  border-top: 1px solid #e2e8f0;
+.progress-bar {
+  height: 10px;
+  background: #ddd;
+  margin-top: 20px;
 }
 
-/* Dark Mode */
-body.dark {
-  background: #0f172a;
-  color: #e2e8f0;
-}
-
-body.dark .hero {
-  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-}
-
-body.dark .benefit {
-  background: #1e293b;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-body.dark .stats {
-  background: #0f172a;
-}
-
-body.dark .stats > div strong {
-  color: #e2e8f0;
-}
-
-body.dark .tagline,
-body.dark .trust,
-body.dark .benefit p,
-body.dark .footer {
-  color: #94a3b8;
-}
-
-/* Mobile Adjustments */
-@media (max-width: 768px) {
-  .hero {
-    padding: 4rem 1rem 7rem;
-  }
-
-  .hero h1 {
-    font-size: 2.8rem;
-  }
-
-  .tagline {
-    font-size: 1.25rem;
-  }
-
-  .benefits {
-    grid-template-columns: 1fr;
-    margin-top: -4rem;
-  }
-
-  .stats {
-    gap: 2.5rem 3rem;
-    padding: 4rem 1rem;
-  }
-
-  .top-nav {
-    margin-bottom: 3rem;
-  }
+.progress-fill {
+  height: 100%;
+  width: 0%;
+  background: #2563eb;
 }
