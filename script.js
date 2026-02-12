@@ -1,14 +1,13 @@
-// ================================================
-// Firebase Configuration – REPLACE WITH YOUR REAL VALUES!
-// Get these from Firebase Console → Project Settings → Web App
-// ================================================
+// =====================================
+// 🔥 REPLACE WITH YOUR REAL FIREBASE CONFIG
+// =====================================
 const firebaseConfig = {
-  apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  authDomain: "your-project-id.firebaseapp.com",
-  projectId: "your-project-id",
-  storageBucket: "your-project-id.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:xxxxxxxxxxxxxxxxxxxxxxxx"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "XXXXXXX",
+  appId: "XXXXXXX"
 };
 
 // Initialize Firebase
@@ -16,162 +15,128 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-console.log("Firebase initialized successfully");
-
-// ================================================
 // DOM Elements
-// ================================================
 const landing = document.getElementById("landing");
 const appContainer = document.getElementById("app-container");
 const signupBtn = document.getElementById("signup-btn");
-const loginLandingBtn = document.getElementById("login-landing-btn");
+const loginBtn = document.getElementById("login-landing-btn");
+const logoutBtn = document.getElementById("logout-btn");
 
-// Todo elements (from your placeholder UI)
 const taskInput = document.getElementById("task-input");
 const prioritySelect = document.getElementById("priority-select");
 const addBtn = document.getElementById("add-btn");
 const taskList = document.getElementById("task-list");
 const progressFill = document.getElementById("progress-fill");
 const progressText = document.getElementById("progress-text");
-const streakEl = document.getElementById("streak");
-const reminderToggle = document.getElementById("reminder-toggle");
-const motivationEl = document.getElementById("motivation");
 
-// Debug: Check if elements are found
-console.log("signupBtn:", signupBtn ? "Found" : "MISSING");
-console.log("loginLandingBtn:", loginLandingBtn ? "Found" : "MISSING");
-
-// ================================================
-// Global variables
-// ================================================
 let currentUser = null;
 let tasks = [];
 
-// ================================================
-// Login / Signup Trigger (REDIRECT method – best for mobile)
-// ================================================
-const triggerLogin = () => {
-  console.log("Login button clicked → starting Google redirect login");
-
+// ==============================
+// Google Login (Redirect)
+// ==============================
+function loginWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  // Optional: limit to gmail accounts only
-  // provider.addScope('email');
-
-  auth.signInWithRedirect(provider).catch((error) => {
-    console.error("signInWithRedirect failed:", error.code, error.message);
-    alert("Login could not start:\n" + error.message);
-  });
-};
-
-// Attach click listeners
-if (signupBtn) {
-  signupBtn.addEventListener("click", triggerLogin);
-}
-if (loginLandingBtn) {
-  loginLandingBtn.addEventListener("click", triggerLogin);
+  auth.signInWithRedirect(provider);
 }
 
-// ================================================
-// Handle redirect result after coming back from Google
-// ================================================
-auth.getRedirectResult()
-  .then((result) => {
-    if (result.user) {
-      console.log("Redirect login SUCCESS:", result.user.displayName, result.user.email);
-    } else {
-      console.log("No redirect result (this is normal on first page load)");
-    }
-  })
-  .catch((error) => {
-    console.error("getRedirectResult error:", error.code, error.message);
-    if (error.code) {
-      alert("Login failed during redirect:\n" + error.message);
-    }
-  });
+signupBtn.addEventListener("click", loginWithGoogle);
+loginBtn.addEventListener("click", loginWithGoogle);
 
-// ================================================
-// Listen for auth state changes (logged in / out)
-// ================================================
-auth.onAuthStateChanged((user) => {
+// Handle redirect result
+auth.getRedirectResult().catch(error => {
+  alert(error.message);
+});
+
+// ==============================
+// Auth State Listener
+// ==============================
+auth.onAuthStateChanged(user => {
   currentUser = user;
-  console.log("Auth state changed → user:", user ? user.email : "none");
 
   if (user) {
     landing.style.display = "none";
     appContainer.style.display = "block";
-    loadUserData(); // Load tasks from Firestore
+    loadTasks();
   } else {
     landing.style.display = "block";
     appContainer.style.display = "none";
   }
 });
 
-// ================================================
-// Load tasks & streak from Firestore (per user)
-// ================================================
-function loadUserData() {
-  if (!currentUser) return;
+// Logout
+logoutBtn.addEventListener("click", () => {
+  auth.signOut();
+});
 
-  const userDocRef = db.collection("users").doc(currentUser.uid);
-
-  userDocRef.get().then((doc) => {
-    if (doc.exists) {
-      const data = doc.data();
-      tasks = data.tasks || [];
-      console.log("Loaded tasks from Firestore:", tasks.length);
+// ==============================
+// Firestore Functions
+// ==============================
+function loadTasks() {
+  db.collection("users").doc(currentUser.uid).get()
+    .then(doc => {
+      if (doc.exists) {
+        tasks = doc.data().tasks || [];
+      } else {
+        tasks = [];
+      }
       renderTasks();
       updateProgress();
-    } else {
-      console.log("New user – creating empty data");
-      saveUserData(); // Create initial document
-    }
-  }).catch((err) => {
-    console.error("Error loading user data:", err);
+    });
+}
+
+function saveTasks() {
+  db.collection("users").doc(currentUser.uid).set({
+    tasks: tasks
   });
 }
 
-// ================================================
-// Save tasks & streak to Firestore
-// ================================================
-function saveUserData() {
-  if (!currentUser) return;
+// ==============================
+// Task Functions
+// ==============================
+function addTask() {
+  const text = taskInput.value.trim();
+  if (!text) return;
 
-  db.collection("users").doc(currentUser.uid).set({
-    tasks: tasks,
-    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-  }, { merge: true })
-  .then(() => console.log("Data saved to Firestore"))
-  .catch((err) => console.error("Save error:", err));
+  tasks.push({
+    text: text,
+    completed: false,
+    priority: prioritySelect.value
+  });
+
+  taskInput.value = "";
+  saveTasks();
+  renderTasks();
+  updateProgress();
 }
 
-// ================================================
-// Render tasks list
-// ================================================
+addBtn.addEventListener("click", addTask);
+
+taskInput.addEventListener("keypress", e => {
+  if (e.key === "Enter") addTask();
+});
+
 function renderTasks() {
   taskList.innerHTML = "";
 
   tasks.forEach((task, index) => {
     const li = document.createElement("li");
-    li.className = `task-item ${task.priority || "medium"} ${task.completed ? "completed" : ""}`;
-
     li.innerHTML = `
       <input type="checkbox" ${task.completed ? "checked" : ""}>
-      <span class="task-text">${task.text}</span>
-      <button class="delete-btn">×</button>
+      ${task.text}
+      <button>❌</button>
     `;
 
-    // Toggle complete
     li.querySelector("input").addEventListener("change", () => {
       tasks[index].completed = !tasks[index].completed;
-      saveUserData();
+      saveTasks();
       renderTasks();
       updateProgress();
     });
 
-    // Delete task
-    li.querySelector(".delete-btn").addEventListener("click", () => {
+    li.querySelector("button").addEventListener("click", () => {
       tasks.splice(index, 1);
-      saveUserData();
+      saveTasks();
       renderTasks();
       updateProgress();
     });
@@ -180,9 +145,6 @@ function renderTasks() {
   });
 }
 
-// ================================================
-// Update progress bar & percentage
-// ================================================
 function updateProgress() {
   if (tasks.length === 0) {
     progressFill.style.width = "0%";
@@ -191,59 +153,8 @@ function updateProgress() {
   }
 
   const completed = tasks.filter(t => t.completed).length;
-  const percentage = Math.round((completed / tasks.length) * 100);
-  progressFill.style.width = percentage + "%";
-  progressText.textContent = `Progress: ${percentage}%`;
+  const percent = Math.round((completed / tasks.length) * 100);
+
+  progressFill.style.width = percent + "%";
+  progressText.textContent = "Progress: " + percent + "%";
 }
-
-// ================================================
-// Add new task
-// ================================================
-function addTask() {
-  const text = taskInput.value.trim();
-  if (!text) return;
-
-  tasks.push({
-    text,
-    completed: false,
-    priority: prioritySelect.value || "medium",
-    createdAt: new Date().toISOString()
-  });
-
-  taskInput.value = "";
-  saveUserData();
-  renderTasks();
-  updateProgress();
-}
-
-// ================================================
-// Event listeners for todo app
-// ================================================
-if (addBtn) {
-  addBtn.addEventListener("click", addTask);
-}
-
-if (taskInput) {
-  taskInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") addTask();
-  });
-}
-
-// Optional: Dark mode toggle (basic)
-document.getElementById("theme-toggle")?.addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-  // You can save preference to localStorage if needed
-});
-
-// ================================================
-// Initial check on page load
-// ================================================
-console.log("Page loaded – waiting for auth state...");
-
-
-const firebaseConfig = {
-  apiKey: "AIzaSy...something-here...",
-  authDomain: "your-project.firebaseapp.com",
-  projectId: "your-project",
-  // ... other keys
-};
