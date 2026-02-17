@@ -20,7 +20,11 @@ let currentUser;
 
 // Login
 document.getElementById("google-login").onclick = () => {
-  signInWithPopup(auth, provider);
+  import { signInWithRedirect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+document.getElementById("google-login").onclick = () => {
+  signInWithRedirect(auth, provider);
+};
 };
 
 // Logout
