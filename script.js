@@ -1,74 +1,81 @@
-function login() {
-  alert("Login button working");
-
-  auth.signInWithPopup(provider)
-    .then((result) => {
-      alert("Login Success");
-    })
-    .catch((error) => {
-      alert(error.message);
-    });
-}
-
-
+// Import Firebase modules
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 // Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyBQxAEzF40f7wceNr1otvUYppzpGazJlro",
-  authDomain: "study-todo-ee9b7.firebaseapp.com",
-  projectId: "study-todo-ee9b7",
-  storageBucket: "study-todo-ee9b7.firebasestorage.app",
-  messagingSenderId: "880422833922",
-  appId: "1:880422833922:web:1a02c1b5751a196dbbfc1b",
-  measurementId: "G-WG7W7WSWHM"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
 };
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+// Initialize
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
 
-const auth = firebase.auth();
-const db = firebase.firestore();
-const provider = new firebase.auth.GoogleAuthProvider();
+let currentUser;
 
-// Elements
-const landing = document.getElementById("landing");
-const appContainer = document.getElementById("app-container");
-const signupBtn = document.getElementById("signup-btn");
-const loginLandingBtn = document.getElementById("login-landing-btn");
-const logoutBtn = document.getElementById("logout-btn");
-
-// Login Function
-function login() {
-  auth.signInWithPopup(provider)
-    .then((result) => {
-      landing.style.display = "none";
-      appContainer.style.display = "block";
-    })
-    .catch((error) => {
-      alert(error.message);
-    });
-}
+// Login
+document.getElementById("google-login").onclick = () => {
+  signInWithPopup(auth, provider);
+};
 
 // Logout
-function logout() {
-  auth.signOut().then(() => {
-    landing.style.display = "block";
-    appContainer.style.display = "none";
+document.getElementById("logout").onclick = () => {
+  signOut(auth);
+};
+
+// Auth State
+onAuthStateChanged(auth, user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("todo-section").style.display = "block";
+    document.getElementById("user-name").innerText = "Hello " + user.displayName;
+    loadTasks();
+  } else {
+    document.getElementById("login-section").style.display = "block";
+    document.getElementById("todo-section").style.display = "none";
+  }
+});
+
+// Add Task
+async function addTask() {
+  const task = document.getElementById("task-input").value;
+  if (!task) return;
+
+  await addDoc(collection(db, "tasks"), {
+    uid: currentUser.uid,
+    text: task
+  });
+
+  document.getElementById("task-input").value = "";
+  loadTasks();
+}
+
+// Load Tasks
+async function loadTasks() {
+  const q = query(collection(db, "tasks"), where("uid", "==", currentUser.uid));
+  const querySnapshot = await getDocs(q);
+
+  const list = document.getElementById("task-list");
+  list.innerHTML = "";
+
+  querySnapshot.forEach(docSnap => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${docSnap.data().text}
+      <button onclick="deleteTask('${docSnap.id}')">X</button>
+    `;
+    list.appendChild(li);
   });
 }
 
-// Button Events
-signupBtn.addEventListener("click", login);
-loginLandingBtn.addEventListener("click", login);
-logoutBtn.addEventListener("click", logout);
-
-// Auto Login Check
-auth.onAuthStateChanged((user) => {
-  if (user) {
-    landing.style.display = "none";
-    appContainer.style.display = "block";
-  } else {
-    landing.style.display = "block";
-    appContainer.style.display = "none";
-  }
-});
+// Delete Task
+window.deleteTask = async function(id) {
+  await deleteDoc(doc(db, "tasks", id));
+  loadTasks();
+}
