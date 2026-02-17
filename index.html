@@ -1,32 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Study Todo App</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Study Todo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
-  <div class="container">
+  <h2>📚 Study Todo List</h2>
 
-    <h2>📚 Study Todo List</h2>
+  <button id="login">Login with Google</button>
+  <button id="logout" style="display:none;">Logout</button>
 
-    <div id="login-section">
-      <button id="google-login">Login with Google</button>
-    </div>
+  <ul id="taskList"></ul>
 
-    <div id="todo-section" style="display:none;">
-      <p id="user-name"></p>
-      <button id="logout">Logout</button>
-
-      <input type="text" id="task-input" placeholder="Enter study task...">
-      <button onclick="addTask()">Add</button>
-
-      <ul id="task-list"></ul>
-    </div>
-
-  </div>
-
-  <!-- Firebase CDN -->
   <script type="module" src="script.js"></script>
 
 </body>
