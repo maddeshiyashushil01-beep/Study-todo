@@ -42,3 +42,11 @@ onAuthStateChanged(auth, user => {
 logoutBtn.onclick = () => {
   signOut(auth);
 };
+
+
+// Save data
+localStorage.setItem("username", "Shushil");
+
+// Get data
+let user = localStorage.getItem("username");
+console.log(user);
